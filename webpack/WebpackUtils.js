@@ -1,8 +1,7 @@
 //默认导入的模块
 const DEFAULT_INCLUDE = [
     "typescript_api_sdk",
-    "wuxp_antd_mobile",
-    "wuxp_antd_mamager",
+    "wuxp_antd_pc",
     "wuxp_react_dynamic_router"
 ];
 
