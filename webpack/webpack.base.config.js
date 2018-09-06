@@ -4,6 +4,8 @@ const {scssModuleLoader, cssModuleLoader} = require('./cssModuleUtils');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const {getLessLoader} = require("./getLessLoader");
 
+const {isExclude} = require("./WebpackUtils");
+
 function getWebpackConfig() {
     if (process.env._self !== "1") {
         return require("../../../webpack-config/WebpackConfig");
@@ -45,22 +47,20 @@ const getWebpackBaseConfig = function (options) {
             publicPath: "/"
         },
         resolve: {
-            extensions: [".ts", ".tsx", "d.ts", ".js", ".css", ".scss", ".less", ".png", "jpg", ".jpeg", ".gif"],
+            extensions: [".ts", ".tsx", "d.ts", ".js",".jsx",".css", ".scss", ".less", ".png", "jpg", ".jpeg", ".gif"],
         },
 
         module: {
             rules: [
                 {
-                    test: /\.js$/,
-                    exclude: /(node_modules|bower_components)/,
+                    test: /\.js[x]?$/,
+                    exclude: isExclude,
                     use: [
                         {
                             loader: "babel-loader",
                             options: {
-                                presets: [
-                                    "react",
-                                    "env"
-                                ],
+                                // presets: ['es2015', 'stage-2'],
+                                presets: ["react", "env"],
                                 compact: true
                             }
                         }
@@ -68,7 +68,7 @@ const getWebpackBaseConfig = function (options) {
                 },
                 {
                     test: /\.ts[x]?$/,
-                    // exclude: isExclude,
+                    exclude: isExclude,
                     use: [
                         {
                             loader: "babel-loader",
