@@ -4,3 +4,6 @@ tsconfig.json
 .babelrc
 .idea
 dist
+webpack.config.js
+webpack.prod.config.js
+webpack.local.dev.js
