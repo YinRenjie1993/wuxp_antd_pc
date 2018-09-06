@@ -1,6 +1,7 @@
-const path = require('path');
-const {getWebpackBaseConfig} = require("./webpack.base.config");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const path=require("path");
+
+const {getWebpackBaseConfig}=require("./webpack.base.config");
+
 
 
 const baseConfig = getWebpackBaseConfig({
@@ -13,7 +14,7 @@ const config = {
 
 config.plugins = [
     ...config.plugins,
-    new ExtractTextPlugin('styles.css')
 ];
+config.mode = "development";
 
-module.exports = config;
+module.exports=config;

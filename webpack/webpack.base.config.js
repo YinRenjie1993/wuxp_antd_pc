@@ -1,10 +1,13 @@
-const path = require('path');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const {scssModuleLoader, cssModuleLoader} = require('./cssModuleUtils');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const {getLessLoader} = require("./getLessLoader");
+const webpack = require("webpack");
+const path = require("path");
+const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const {isExclude} = require("./WebpackUtils");
+
+const {getLessLoader} = require("./getLessLoader");
+const {scssModuleLoader, cssModuleLoader} = require("./cssModuleUtils");
+
 
 function getWebpackConfig() {
     if (process.env._self !== "1") {
@@ -20,15 +23,11 @@ const {
 
 
 /**
- * 获取 打包配置
- * @param options
- *   {
- *     packagePath:"",  //packageJson的文件的地址
- *     themePath:"",    //样式js所在地址
- *   }
- * @return {{entry: {app: string}, output: {filename: string, chunkFilename: string, path: string, publicPath: string}, resolve: {extensions: string[]}, module: {rules: *[]}, externals: {react: string, "react-dom": string}}}
+ * 获取打包配置
+ * @param {GetWebpackBaseConfigOptions} options
+ * @return {webpack.Configuration}
  */
-const getWebpackBaseConfig = function (options) {
+getWebpackBaseConfig = function (options) {
 
     console.log("---------初始化打包配置--------", options);
 
@@ -47,13 +46,14 @@ const getWebpackBaseConfig = function (options) {
             publicPath: "/"
         },
         resolve: {
-            extensions: [".ts", ".tsx", "d.ts", ".js",".jsx",".css", ".scss", ".less", ".png", "jpg", ".jpeg", ".gif"],
+            extensions: [".ts", ".tsx", "d.ts", ".js",".jsx",".css", ".scss", ".less", ".png", "jpg", ".jpeg", ".gif"]
         },
 
         module: {
             rules: [
                 {
                     test: /\.js[x]?$/,
+                    // exclude: /(node_modules|bower_components)/,
                     exclude: isExclude,
                     use: [
                         {
@@ -82,7 +82,7 @@ const getWebpackBaseConfig = function (options) {
                 },
                 {
                     test: /\.css$/,
-                    use: ExtractTextPlugin.extract({
+                    use: ExtractTextWebpackPlugin.extract({
                         fallback: "style-loader",
                         use: [
                             cssModuleLoader,
@@ -95,26 +95,28 @@ const getWebpackBaseConfig = function (options) {
                                 }
                             }
                         ]
-                    })
-                },
+                    }),
 
+                },
                 getLessLoader(options),
 
                 {
                     test: /\.s[c|a]ss$/,
-                    use: [
-                        require.resolve("style-loader"),
-                        scssModuleLoader,
-                        {
-                            loader: "postcss-loader",
-                            options: {
-                                config: {
-                                    path: path.join(__dirname, './postcss.config.js')
+                    use: ExtractTextWebpackPlugin.extract({
+                        fallback: "style-loader",
+                        use: [
+                            scssModuleLoader,
+                            {
+                                loader: "postcss-loader",
+                                options: {
+                                    config: {
+                                        path: path.join(__dirname, './postcss.config.js')
+                                    }
                                 }
-                            }
-                        },
-                        {loader: "sass-loader"}
-                    ]
+                            },
+                            {loader: "sass-loader"}
+                        ]
+                    })
                 },
                 {
                     test: /\.(png|jpg|svg)/,
@@ -126,6 +128,36 @@ const getWebpackBaseConfig = function (options) {
                             }
                         }
                     ]
+                },
+                {
+                    test: /\.(woff|woff2|svg|ttf|eot)$/,
+                    use: [
+                        {
+                            loader: 'file-loader',
+                            //项目设置打包到dist下的fonts文件夹下
+                            options: {
+                                name: 'fonts/[name].[hash:8].[ext]',
+                                //20kb以下的直接打包到css文件中
+                                limit: 1024 * 20,
+                                //返回最终的资源相对路径
+                                publicPath: function (url) {
+                                    //使用全局变量来传递 资源根路径
+                                    let uri = path.join(global['__RESOURCES_BASE_NAME__'], url).replace(/\\/g, '/');
+                                    return uri;
+                                }
+                            },
+
+                        }
+                    ]
+                },
+                {
+                    test: /\.art$/,
+                    loader: "art-template-loader",
+                    options: {
+                        escape: false
+                        // art-template options (if necessary)
+                        // @see https://github.com/aui/art-template
+                    }
                 }
             ]
         },
@@ -135,9 +167,20 @@ const getWebpackBaseConfig = function (options) {
         // dependencies, which allows browsers to cache those libraries between builds.
         externals: {
             "react": "React",
-            "react-dom": "ReactDOM"
+            "react-dom": "ReactDOM",
+            "moment": "moment"
         },
-        plugins: []
+        plugins: [
+            new ExtractTextWebpackPlugin({
+                filename: "style.css",
+                allChunks: true
+            }),
+            // new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn/),
+            // new WriteFilePlugin({
+            //     // test: /^((?!\.hot-update).)*$/,
+            //     test: /\.jsp|\.tld|\.xml$/,
+            // })
+        ]
     };
     //是否打release包
     let release = process.env.RELEASE;
@@ -156,7 +199,7 @@ const getWebpackBaseConfig = function (options) {
                 // verbose: true,        　　　　　　　  //开启在控制台输出信息
                 // dry: false        　　　　　　　　　　//启用删除文件,
                 allowExternal: true,                  //允许删除wbpack根目录之外的文件
-                beforeEmit: true                       //在将文件发送到输出目录之前执行清理
+                // beforeEmit: true                       //在将文件发送到输出目录之前执行清理
             }),
         );
     }
@@ -169,4 +212,3 @@ const getWebpackBaseConfig = function (options) {
 module.exports = {
     getWebpackBaseConfig
 };
-
