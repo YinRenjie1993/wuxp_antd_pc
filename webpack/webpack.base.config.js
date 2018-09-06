@@ -53,8 +53,8 @@ getWebpackBaseConfig = function (options) {
             rules: [
                 {
                     test: /\.js[x]?$/,
-                    // exclude: /(node_modules|bower_components)/,
-                    exclude: isExclude,
+                    exclude: /(node_modules|bower_components)/,
+                    // exclude: isExclude,
                     use: [
                         {
                             loader: "babel-loader",
@@ -74,7 +74,8 @@ getWebpackBaseConfig = function (options) {
                             loader: "babel-loader",
                             options: {
                                 cacheDirectory: true,
-                                presets: ['es2015', 'stage-2']
+                                presets: ["react", "env"]
+                                // presets: ['es2015', 'stage-2']
                             }
                         },
                         {loader: "awesome-typescript-loader"}

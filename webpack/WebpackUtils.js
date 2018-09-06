@@ -1,7 +1,8 @@
 //默认导入的模块
 const DEFAULT_INCLUDE = [
     "typescript_api_sdk",
-    "wuxp_antd_pc",
+    "wuxp_antd_mobile",
+    "wuxp_antd_mamager",
     "wuxp_react_dynamic_router"
 ];
 
@@ -35,4 +36,6 @@ const isExclude = function (path) {
     return isNodeModules;
 };
 
-module.export = isExclude;
+module.exports = {
+    isExclude
+};
