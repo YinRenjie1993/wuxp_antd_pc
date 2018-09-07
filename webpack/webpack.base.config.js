@@ -53,14 +53,18 @@ getWebpackBaseConfig = function (options) {
             rules: [
                 {
                     test: /\.js[x]?$/,
-                    exclude: /(node_modules|bower_components)/,
-                    // exclude: isExclude,
+                    exclude: isExclude,
                     use: [
                         {
                             loader: "babel-loader",
                             options: {
                                 // presets: ['es2015', 'stage-2'],
+                                cacheDirectory: true,
                                 presets: ["react", "env"],
+                                plugins: [
+                                    //exnext 动态导入
+                                    'syntax-dynamic-import'
+                                ],
                                 compact: true
                             }
                         }
@@ -74,8 +78,9 @@ getWebpackBaseConfig = function (options) {
                             loader: "babel-loader",
                             options: {
                                 cacheDirectory: true,
-                                presets: ["react", "env"]
-                                // presets: ['es2015', 'stage-2']
+                                presets: ["react", "env"],
+                                plugins: ['syntax-dynamic-import'],
+                                compact: true
                             }
                         },
                         {loader: "awesome-typescript-loader"}
