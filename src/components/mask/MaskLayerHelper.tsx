@@ -39,11 +39,7 @@ export function openLayer(props: MaskLayerProps, elementId: string, delay?: numb
         if (timerId) {
             clearTimeout(timerId);
         }
-        const unmountResult = ReactDOM.unmountComponentAtNode(container);
-        const parentNode = container.parentNode;
-        if (unmountResult && parentNode) {
-            parentNode.removeChild(container);
-        }
+        unmountComponentByNode(container);
     }
 
     return {
@@ -53,6 +49,14 @@ export function openLayer(props: MaskLayerProps, elementId: string, delay?: numb
 
 function render(props: MaskLayerProps, container) {
     ReactDOM.render(<MaskLayer {...props} />, container);
+}
+
+export function unmountComponentByNode(container) {
+    const unmountResult = ReactDOM.unmountComponentAtNode(container);
+    const parentNode = container.parentNode;
+    if (unmountResult && parentNode) {
+        parentNode.removeChild(container);
+    }
 }
 
 
