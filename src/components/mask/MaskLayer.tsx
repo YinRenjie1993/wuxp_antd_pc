@@ -1,7 +1,6 @@
 import * as React from "react";
 import {MouseEventHandler} from "react";
 import {isFunction} from "util";
-import Animate from 'rc-animate';
 
 export interface MaskLayerProps {
 
@@ -12,6 +11,8 @@ export interface MaskLayerProps {
     onClick?: MouseEventHandler<any>;
 
     children?: React.ReactNode;
+
+    // transitionName?: string;
 
 }
 
@@ -36,8 +37,11 @@ const defaultStyle: React.CSSProperties = {
  **/
 export default class MaskLayer extends React.PureComponent<MaskLayerProps, MaskLayerState> {
 
-    private el;
+    static defaultProps = {
+        transitionName: "fade"
+    };
 
+    private el;
 
     constructor(props: MaskLayerProps, context: any) {
         super(props, context);
@@ -53,8 +57,7 @@ export default class MaskLayer extends React.PureComponent<MaskLayerProps, MaskL
 
         const {children, onClick, className, style} = this.props;
 
-        return <Animate
-            transitionName="fade"
+        return <div
             className={className}
             ref={el => this.el = el}
             onClick={(event) => {
@@ -70,7 +73,7 @@ export default class MaskLayer extends React.PureComponent<MaskLayerProps, MaskL
             style={{
                 ...defaultStyle,
                 ...style
-            }}>{children}</Animate>
+            }}>{children}</div>
     }
 
 }
