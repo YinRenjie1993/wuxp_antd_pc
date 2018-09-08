@@ -5,12 +5,12 @@ import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxR
 import {isNullOrUndefined} from "util";
 import {NamedRouteConfig} from "wuxp_react_dynamic_router/src/model/route/NamedRouteConfig";
 
-interface BaseLayoutProps extends ReduxRouterProps {
+export interface BaseLayoutProps extends ReduxRouterProps {
 
     routes: NamedRouteConfig[]
 }
 
-export default class BaseLayout extends React.Component<BaseLayoutProps, any> {
+export default class BaseLayout<P extends BaseLayoutProps = BaseLayoutProps, S = any> extends React.Component<P, S> {
 
 
     render() {
