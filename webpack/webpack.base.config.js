@@ -46,7 +46,7 @@ getWebpackBaseConfig = function (options) {
             publicPath: "/"
         },
         resolve: {
-            extensions: [".ts", ".tsx", "d.ts", ".js",".jsx",".css", ".scss", ".less", ".png", "jpg", ".jpeg", ".gif"]
+            extensions: [".ts", ".tsx", "d.ts", ".js", ".jsx", ".css", ".scss", ".less", ".png", "jpg", ".jpeg", ".gif"]
         },
 
         module: {
@@ -174,7 +174,11 @@ getWebpackBaseConfig = function (options) {
         externals: {
             "react": "React",
             "react-dom": "ReactDOM",
-            "moment": "moment"
+            "moment": "moment",
+            "react-router": "ReactRouter",
+            "react-router-dom": "ReactRouterDOM",
+            "redux": "Redux",
+            "antd": "antd"
         },
         plugins: [
             new ExtractTextWebpackPlugin({
